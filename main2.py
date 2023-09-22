@@ -76,7 +76,7 @@ def generate_feedback(phrase, transcription_text):
         messages=[
             {
                 "role": "system",
-                "content": "You are an English coach.\n\nYour role is to analyze how a student, who is answering a general question. The student is not a native-speaker.\n\nYour role is to find errors in the student phrases, such as wrong verbal time, wrong use of plurals, or even wrong use of some words.\n\nSometimes, the answer doesn't have any major problems, but the person repeats the same expression or it's not clear. Your role is to review the answer and provide feedback to the user so that they can improve their English and how they speak well in public.\n\nPlease provide ideas on how the person could speak better.\n\nAt the beginning, include any general comments related to the whole answer.\nAfter that, if you find mistakes, create a list of them, and explain why. You can divide the mistakes found in topics, such as:\n\n- Grammar: List all the mistakes related to grammar.\n- Use of incorrect pronouns.\n- Use of incorrect verbs.\n- Repetitive terms.\n- Unclear ideas.\n- etc\n\nIf the answer doesn't have the topics above you should not mention them. Also, feel free to include other topics.\n\nYour feedback will be shared directly to the student, so you can speak directly to them. Be kind and respectful.",
+                "content": "You are a Small Talk Coach.\n\nYour role is to analyze how well a person replies to small talk questions.\n\nThe student is not a native-speaker.\n\nYour role is to find errors in the student phrases, such as wrong verbal time, wrong use of plurals, or even wrong use of some words.\n\nSometimes, the answer doesn't have any major problems, but the person repeats the same expression or it's not clear. Your role is to review the answer and provide feedback to the user so that they can improve their English and how they speak well in public.\n\nPlease provide ideas on how the person could speak better.\n\nAt the beginning, include any general comments related to the whole answer.\nAfter that, if you find mistakes, create a list of them, and explain why. You can divide the mistakes found in topics, such as:\n\n- Grammar: List all the mistakes related to grammar.\n- Use of incorrect pronouns.\n- Use of incorrect verbs.\n- Repetitive terms.\n- Unclear ideas.\n- etc\n\nIf the answer doesn't have the topics above you should not mention them. Also, feel free to include other topics.\n\nYour feedback will be shared directly to the student, so you can speak directly to them.",
             },
             {"role": "user", "content": 'Question:"' + phrase + '"\nStudent Answer: "'+transcription_text + '"'},
         ],
@@ -124,30 +124,15 @@ if len(audio) > 0:
     # Install the assemblyai package by executing the command `pip3 install assemblyai` (macOS) or `pip install assemblyai` (Windows).
 
     # Your API token is already set here
-    aai.settings.api_key = "f162fcde5e764a26b860530c1f0498c8"
+    aai.settings.api_key = os.getenv("ASSEMBLYAI_API_KEY")
 
-    # Create a transcriber object.
-    transcriber = aai.Transcriber()
+    with st.spinner('Transcribing your audio...'):
+        # Create a transcriber object.
+        transcriber = aai.Transcriber()
 
-    # If you have a local audio file, you can transcribe it using the code below.
-    # Make sure to replace the filename with the path to your local audio file.
-    transcription_text = transcriber.transcribe("audio.wav").text
-
-    # Alternatively, if you have a URL to an audio file, you can transcribe it with the following code.
-    # Uncomment the line below and replace the URL with the link to your audio file.
-    # transcript = transcriber.transcribe("https://storage.googleapis.com/aai-web-samples/espn-bears.m4a")
-
-    # # After the transcription is complete, the text is printed out to the console.
-    # print(transcript.text)
-    # transcript = openai.Audio.transcribe("whisper-1", buffer)
-
-    # To save audio to a file (assuming you want a WAV file):
-    # wav_file = open("audio.wav", "wb")
-    # wav_file.write(wav_audio_data)
-    # wav_file.close()
-
-    # result = model.transcribe("audio.wav")
-    # transcription_text = result["text"]
+        # If you have a local audio file, you can transcribe it using the code below.
+        # Make sure to replace the filename with the path to your local audio file.
+        transcription_text = transcriber.transcribe("audio.wav").text
 
     st.markdown("---")
 
@@ -157,5 +142,7 @@ if len(audio) > 0:
     st.markdown("---")
 
     st.header("Feedback")
-    feedback = generate_feedback(phrase, transcription_text)
+    with st.spinner('Generating your feedback, please wait...'):
+        feedback = generate_feedback(phrase, transcription_text)
+
     st.write(feedback)
