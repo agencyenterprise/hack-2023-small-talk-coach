@@ -1,15 +1,10 @@
 import random
 import streamlit as st
-import websockets
-import asyncio
-import base64
-import json
-import pyaudio
 import os
 from dotenv import load_dotenv
 import openai
 import whisper
-from audiorecorder import audiorecorder
+from st_audiorec import st_audiorec
 
 
 load_dotenv()
@@ -97,20 +92,30 @@ def generate_feedback(phrase, transcription_text):
 
 model = get_base_model()
 
-phrase = phrases[0]
-st.text(phrase)
+
+if 'random' not in st.session_state:
+    st.session_state['random'] = random.randint(0, len(phrases)-1)
+
+phrase = phrases[st.session_state.random]
+
+st.write(phrase)
+
+# create a button to randomize the phrase
+if st.button("Randomize Phrase"):
+    st.session_state.random = random.randint(0, len(phrases)-1)
+    phrase = phrases[st.session_state.random]
 
 # Audio recording
-audio = audiorecorder("Click to record", "Recording...")
+wav_audio_data = st_audiorec()
 
-if len(audio) > 0:
+if wav_audio_data is not None:
 
     # To play audio in frontend:
-    st.audio(audio.tobytes(), format="audio/wav")
+    st.audio(wav_audio_data, format="audio/wav")
 
     # To save audio to a file (assuming you want a WAV file):
     wav_file = open("audio.wav", "wb")
-    wav_file.write(audio.tobytes())
+    wav_file.write(wav_audio_data)
     wav_file.close()
 
     result = model.transcribe("audio.wav")
@@ -118,7 +123,5 @@ if len(audio) > 0:
 
     st.write(transcription_text)
 
-    # create a button to generate a feedback
-    if st.button("Generate Feedback"):
-        feedback = generate_feedback(phrase, transcription_text)
-        st.write(feedback)
+    feedback = generate_feedback(phrase, transcription_text)
+    st.write(feedback)
