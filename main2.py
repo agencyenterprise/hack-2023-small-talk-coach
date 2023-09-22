@@ -12,8 +12,6 @@ load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-st.title("Small talk coach 🗣️")
-
 # add the ideogram.jpeg on the page
 st.image("ideogram.jpeg")
 
@@ -93,13 +91,11 @@ if 'random' not in st.session_state:
 
 phrase = phrases[st.session_state.random]
 
-st.write("Here is a place where you can practice small talks! 🗣️")
+st.write("Here is a place where you can practice small talk! 🗣️")
 
-st.write("Just read the question below, hit record, answer the question and click on stop recordinggi! 🎙️")
+st.write("Just read the question below, hit record, answer the question, and click on stop! 🎙️")
 
-st.write("""Hints:
-
-- Try to answer that question below as if you were in a conversation with someone.
+st.write("""- Try to answer that question below as if you were in a conversation with someone.
 
 - PS: If you don't feel comfortable of talking about this topic, you can refresh the page and get another phrase to practice!.""")
 
@@ -110,7 +106,7 @@ st.header(phrase)
 st.markdown("---")
 
 # Audio recording
-audio = audiorecorder("Click to record", "Recording...")
+audio = audiorecorder("Start recording", "Stop recording")
 
 if len(audio) > 0:
     # To play audio in frontend:
