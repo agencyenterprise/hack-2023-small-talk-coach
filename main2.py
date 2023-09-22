@@ -4,8 +4,9 @@ import os
 from dotenv import load_dotenv
 import openai
 import whisper
-from st_audiorec import st_audiorec
-
+from audiorecorder import audiorecorder
+# Import the AssemblyAI module
+import assemblyai as aai
 
 load_dotenv()
 
@@ -69,12 +70,6 @@ phrases = [
 "What's a dream you've had that you'd love to see come true in the future?",
 ]
 
-@st.cache_resource
-def get_base_model():
-    # Create a database session object that points to the URL.
-    return whisper.load_model("tiny")
-
-
 def generate_feedback(phrase, transcription_text):
     response = openai.ChatCompletion.create(
         model="gpt-4",
@@ -93,8 +88,6 @@ def generate_feedback(phrase, transcription_text):
     )
     return response.choices[0].message.content
 
-model = get_base_model()
-
 if 'random' not in st.session_state:
     st.session_state['random'] = random.randint(0, len(phrases)-1)
 
@@ -102,7 +95,7 @@ phrase = phrases[st.session_state.random]
 
 st.write("Here is a place where you can practice small talks! 🗣️")
 
-st.write("Just read the question below, hit record, answer the question and click on stop recording! 🎙️")
+st.write("Just read the question below, hit record, answer the question and click on stop recordinggi! 🎙️")
 
 st.write("""Hints:
 
@@ -117,17 +110,44 @@ st.header(phrase)
 st.markdown("---")
 
 # Audio recording
-wav_audio_data = st_audiorec()
+audio = audiorecorder("Click to record", "Recording...")
 
-if wav_audio_data is not None:
+if len(audio) > 0:
+    # To play audio in frontend:
+    st.audio(audio.tobytes(), format="audio/wav")
 
     # To save audio to a file (assuming you want a WAV file):
     wav_file = open("audio.wav", "wb")
-    wav_file.write(wav_audio_data)
+    wav_file.write(audio.tobytes())
     wav_file.close()
 
-    result = model.transcribe("audio.wav")
-    transcription_text = result["text"]
+    # Install the assemblyai package by executing the command `pip3 install assemblyai` (macOS) or `pip install assemblyai` (Windows).
+
+    # Your API token is already set here
+    aai.settings.api_key = "f162fcde5e764a26b860530c1f0498c8"
+
+    # Create a transcriber object.
+    transcriber = aai.Transcriber()
+
+    # If you have a local audio file, you can transcribe it using the code below.
+    # Make sure to replace the filename with the path to your local audio file.
+    transcription_text = transcriber.transcribe("audio.wav").text
+
+    # Alternatively, if you have a URL to an audio file, you can transcribe it with the following code.
+    # Uncomment the line below and replace the URL with the link to your audio file.
+    # transcript = transcriber.transcribe("https://storage.googleapis.com/aai-web-samples/espn-bears.m4a")
+
+    # # After the transcription is complete, the text is printed out to the console.
+    # print(transcript.text)
+    # transcript = openai.Audio.transcribe("whisper-1", buffer)
+
+    # To save audio to a file (assuming you want a WAV file):
+    # wav_file = open("audio.wav", "wb")
+    # wav_file.write(wav_audio_data)
+    # wav_file.close()
+
+    # result = model.transcribe("audio.wav")
+    # transcription_text = result["text"]
 
     st.markdown("---")
 

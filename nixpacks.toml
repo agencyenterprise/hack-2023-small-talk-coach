@@ -1,2 +1,0 @@
-[phases.setup]
-aptPkgs = ["...", "libc6", "ffmpeg"]
