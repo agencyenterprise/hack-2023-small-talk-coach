@@ -1,0 +1,7 @@
+openai-whisper
+streamlit-audiorecorder
+streamlit
+ffmpeg-python
+st-annotated-text
+openai
+python-dotenv
