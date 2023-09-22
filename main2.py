@@ -95,6 +95,8 @@ st.write("Here is a place where you can practice small talk! 🗣️")
 
 st.write("Just read the question below, hit record, answer the question, and click on stop! 🎙️")
 
+st.write("The Small Talk coach will analyze it and provide feedback on how to improve your small talk game! 📈")
+
 st.write("""- Try to answer that question below as if you were in a conversation with someone.
 
 - PS: If you don't feel comfortable of talking about this topic, you can refresh the page and get another phrase to practice!.""")
@@ -142,3 +144,32 @@ if len(audio) > 0:
         feedback = generate_feedback(phrase, transcription_text)
 
     st.write(feedback)
+
+footer="""<style>
+a:link , a:visited{
+color: blue;
+background-color: transparent;
+text-decoration: underline;
+}
+
+a:hover,  a:active {
+color: red;
+background-color: transparent;
+text-decoration: underline;
+}
+
+.footer {
+position: fixed;
+left: 0;
+bottom: 0;
+width: 100%;
+background-color: white;
+color: black;
+text-align: center;
+}
+</style>
+<div class="footer">
+<p>Developed with ❤ by <a style='display: block; text-align: center;' href="https://www.ae.studio" target="_blank">AE Studio</a></p>
+</div>
+"""
+st.markdown(footer,unsafe_allow_html=True)
