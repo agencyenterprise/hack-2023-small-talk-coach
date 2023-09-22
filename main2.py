@@ -11,7 +11,10 @@ load_dotenv()
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-st.title("Chit-Chat coach 🗣️")
+st.title("Small talk coach 🗣️")
+
+# add the ideogram.jpeg on the page
+st.image("ideogram.jpeg")
 
 phrases = [
 "Hi there! What's the most interesting thing that happened to you today?",
@@ -78,7 +81,7 @@ def generate_feedback(phrase, transcription_text):
         messages=[
             {
                 "role": "system",
-                "content": "You are an English coach.\n\nYour role is to analyze how a student, who is answering a general question. The student is not a native-speaker.\n\nYour role is to find errors in the student phrases, such as wrong verbal time, wrong use of plurals, or even wrong use of some words.\n\nSometimes, the answer doesn't have any major problems, but the person repeats the same expression or it's not clear. Your role is to review the answer and provide feedback to the user so that they can improve their English and how they speak well in public.\n\nPlease provide ideas on how the person could speak better.\n\nAt the beginning, include any general comments related to the whole answer.\nAfter that, if you find mistakes, create a list of them, and explain why. You can divide the mistakes found in topics, such as:\n\n- Grammar: List all the mistakes related to grammar.\n- Use of incorrect pronouns.\n- Use of incorrect verbs.\n- Repetitive terms.\n- Unclear ideas.\n- etc\n\nIf the answer doesn't have the topics above you should not mention them. Also, feel free to include other topics.",
+                "content": "You are an English coach.\n\nYour role is to analyze how a student, who is answering a general question. The student is not a native-speaker.\n\nYour role is to find errors in the student phrases, such as wrong verbal time, wrong use of plurals, or even wrong use of some words.\n\nSometimes, the answer doesn't have any major problems, but the person repeats the same expression or it's not clear. Your role is to review the answer and provide feedback to the user so that they can improve their English and how they speak well in public.\n\nPlease provide ideas on how the person could speak better.\n\nAt the beginning, include any general comments related to the whole answer.\nAfter that, if you find mistakes, create a list of them, and explain why. You can divide the mistakes found in topics, such as:\n\n- Grammar: List all the mistakes related to grammar.\n- Use of incorrect pronouns.\n- Use of incorrect verbs.\n- Repetitive terms.\n- Unclear ideas.\n- etc\n\nIf the answer doesn't have the topics above you should not mention them. Also, feel free to include other topics.\n\nYour feedback will be shared directly to the student, so you can speak directly to them. Be kind and respectful.",
             },
             {"role": "user", "content": 'Question:"' + phrase + '"\nStudent Answer: "'+transcription_text + '"'},
         ],
@@ -92,26 +95,31 @@ def generate_feedback(phrase, transcription_text):
 
 model = get_base_model()
 
-
 if 'random' not in st.session_state:
     st.session_state['random'] = random.randint(0, len(phrases)-1)
 
 phrase = phrases[st.session_state.random]
 
-st.write(phrase)
+st.write("Here is a place where you can practice small talks! 🗣️")
 
-# create a button to randomize the phrase
-if st.button("Randomize Phrase"):
-    st.session_state.random = random.randint(0, len(phrases)-1)
-    phrase = phrases[st.session_state.random]
+st.write("Just read the question below, hit record, answer the question and click on stop recording! 🎙️")
+
+st.write("""Hints:
+
+- Try to answer that question below as if you were in a conversation with someone.
+
+- PS: If you don't feel comfortable of talking about this topic, you can refresh the page and get another phrase to practice!.""")
+
+st.markdown("---")
+
+st.header(phrase)
+
+st.markdown("---")
 
 # Audio recording
 wav_audio_data = st_audiorec()
 
 if wav_audio_data is not None:
-
-    # To play audio in frontend:
-    st.audio(wav_audio_data, format="audio/wav")
 
     # To save audio to a file (assuming you want a WAV file):
     wav_file = open("audio.wav", "wb")
@@ -121,7 +129,13 @@ if wav_audio_data is not None:
     result = model.transcribe("audio.wav")
     transcription_text = result["text"]
 
+    st.markdown("---")
+
+    st.header("Your answer")
     st.write(transcription_text)
 
+    st.markdown("---")
+
+    st.header("Feedback")
     feedback = generate_feedback(phrase, transcription_text)
     st.write(feedback)
