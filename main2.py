@@ -3,7 +3,6 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 import openai
-import whisper
 from audiorecorder import audiorecorder
 # Import the AssemblyAI module
 import assemblyai as aai
@@ -95,7 +94,7 @@ st.write("Here is a place where you can practice small talk! 🗣️")
 
 st.write("Just read the question below, hit record, answer the question, and click on stop! 🎙️")
 
-st.write("The Small Talk coach will analyze it and provide feedback on how to improve your small talk game! 📈")
+st.write("The Small Talk buddy will analyze it and provide feedback on how to improve your small talk game! 📈")
 
 st.write("""- Try to answer that question below as if you were in a conversation with someone.
 
