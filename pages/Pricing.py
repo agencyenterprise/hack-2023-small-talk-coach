@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit.components.v1 import html
 
 st.set_page_config(
     page_title="Small talk buddy - Pricing",
@@ -419,3 +420,7 @@ pricing = """<style>
 </main>
 """
 st.markdown(pricing, unsafe_allow_html=True)
+
+html(
+    """<script src="https://scripts.simpleanalyticscdn.com/latest.js"></script>"""
+)

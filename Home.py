@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 import openai
 from audiorecorder import audiorecorder
+from streamlit.components.v1 import html
 
 # Import the AssemblyAI module
 import assemblyai as aai
@@ -239,3 +240,7 @@ footer = """<style>
 </div>
 """
 st.markdown(footer, unsafe_allow_html=True)
+
+html(
+    """<script src="https://scripts.simpleanalyticscdn.com/latest.js"></script>"""
+)

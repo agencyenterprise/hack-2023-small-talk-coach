@@ -1,4 +1,5 @@
 import streamlit as st
+from streamlit.components.v1 import html
 
 st.set_page_config(
     page_title="Small talk buddy - Who made this?",
@@ -208,18 +209,21 @@ who_made_this = """<style>
     </a>
   </div>
 </div>
-<script>
-  function click() {
-    alert("you clicked the logo");
-    fetch('https://www.samedayskunkworks.com/api/analytics/addEvent', {
-      method: 'post',
-      body: JSON.stringify({
-        origin: window.location.href,
-        destination: 'https://ae.studio/same-day-skunkworks',
-        event: 'SDS Utils Click - Who made this section',
-      }),
-    });
-  }
-</script>
+
 """
 st.markdown(who_made_this, unsafe_allow_html=True)
+
+html("""<script>
+    function click() {
+      fetch('https://www.samedayskunkworks.com/api/analytics/addEvent', {
+        method: 'post',
+        body: JSON.stringify({
+            origin: window.location.href,
+            destination: 'https://ae.studio/same-day-skunkworks',
+            event: 'SDS Utils Click - Who made this section',
+        }),
+      });
+    }
+    </script>
+    <script src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+    """)
