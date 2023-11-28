@@ -161,7 +161,7 @@ who_made_this = """<style>
   <main class="whomadethis-container">
     <div class="flex-1">
       <div class="whomadethis-article">
-        <a onClick="" class="cursor-pointer">
+        <a href="https://ae.studio/same-day-skunkworks" onclick="click()" class="cursor-pointer">
           <img
             alt="AE Logo"
             width="320"
@@ -208,5 +208,18 @@ who_made_this = """<style>
     </a>
   </div>
 </div>
+<script>
+  function click() {
+    alert("you clicked the logo");
+    fetch('https://www.samedayskunkworks.com/api/analytics/addEvent', {
+      method: 'post',
+      body: JSON.stringify({
+        origin: window.location.href,
+        destination: 'https://ae.studio/same-day-skunkworks',
+        event: 'SDS Utils Click - Who made this section',
+      }),
+    });
+  }
+</script>
 """
 st.markdown(who_made_this, unsafe_allow_html=True)
